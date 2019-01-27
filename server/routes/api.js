@@ -31,7 +31,7 @@ const parseRowsToCSV = (rows) => {
             return cleaned.length ? cleaned : "?";
         });
         return cleanCells.join(",").toUpperCase();
-    }).join("\n") + "\n";
+    }).join("\n");
 }
 
 const parseCSVtoJSON = (csv) => {
@@ -102,9 +102,16 @@ function handleExtraction(req, res) {
         });
     }
     if (req.query.spreadsheetId) {
+        if (/\!A1$/.test(req.query.range)) {
+            // If no range selected, fetch entire spreadsheet.
+            req.query.range = req.query.range.replace("!A1", "");
+        }
         gsheets.fetchContents(req.query)
             .then((rows) => {
                 const csvContents = parseRowsToCSV(rows);
+                if (req.query.skipExtraction) {
+                    return res.json({ standardizedContents: { csv: csvContents, json: parseCSVtoJSON(csvContents) } })
+                }
                 executeExtraction(res, { contents: csvContents })
             })
             .catch(errorHandler(res));
@@ -113,8 +120,16 @@ function handleExtraction(req, res) {
         let columns = utils.unique(utils.stripEmpty(utils.transverse(rows)));
         rows = utils.transverse(columns);
         const csvContents = parseRowsToCSV(rows);
+        if (req.query.skipExtraction) {
+            return res.json({ standardizedContents: { csv: csvContents, json: parseCSVtoJSON(csvContents) } })
+        }
         executeExtraction(res, { contents: csvContents });
     }
+}
+
+function cleanForExtraction(req, res) {
+   req.query.skipExtraction = true;
+   return handleExtraction(req, res);
 }
 
 // GET /api/extraction?spreadsheetId={}&range={}
@@ -123,5 +138,12 @@ router.get("/extraction", handleExtraction);
 // POST /api/extraction 
 // req.body => {"spreadsheetId": "...", "range": "..."}
 router.post("/extraction", handleExtraction);
+
+// GET /api/clean?spreadsheetId={}&range={}
+router.get("/clean", cleanForExtraction)
+
+// POST /api/clean
+// req.body => {"spreadsheetId": "...", "range": "..."}
+router.post("/clean", cleanForExtraction);
 
 module.exports = router;
