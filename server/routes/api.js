@@ -47,7 +47,7 @@ const parseTextToRows = (raw) => {
             return row.trim().length;
         });
     rows = rows.map((row) => {
-        return row.split("\t");
+        return row.split(/\,|\t/);
     });
     return rows;
 }
