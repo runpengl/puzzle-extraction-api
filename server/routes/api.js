@@ -49,6 +49,7 @@ const parseTextToRows = (raw) => {
     rows = rows.map((row) => {
         return row.split("\t");
     });
+    return rows;
 }
 
 function getUpdateQuery(token, _resultsCallback, _finishedCallback) {
