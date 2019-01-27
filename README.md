@@ -46,7 +46,7 @@ LDETRIGPA
 
 **Response**:
 
-`results`: List of extraction guesses and corresponding extraction mechanism, ordered by confidence level.
+`results`: List of solution guesses and corresponding extraction mechanism, ordered by confidence level.
 
 ```javascript
 { "results": [
@@ -110,7 +110,7 @@ https://docs.google.com/spreadsheets/d/190jACFVsefeRxc5xd8fE29rZ5Gs_Q4NFOJ8mhis6
 ```
 
 ### [HARD] "Messy" Spreadsheet example
-["Split Seven Ways" [Mystery Hunt 2019]](http://web.mit.edu/puzzle/www/2019/puzzle/solution/split_seven_ways.html)
+["Split Seven Ways" [Mystery Hunt 2019]](http://web.mit.edu/puzzle/www/2019/solution/split_seven_ways.html)
 
 Spreadsheet of collected data (adopted from a real team's scratch work):
 https://docs.google.com/spreadsheets/d/1lK-4Kbj07QbbGfNAA7sLGIuBc-L0PgMJW_bRde1b1U0
