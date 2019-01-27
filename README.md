@@ -1,8 +1,9 @@
 # puzzle-extraction-api
 
 * Node.js API endpoint for https://tools.qhex Puzzlehunt extraction tool, which takes a table of information and attempts to extract an answer by indexing into it in various ways. Values can be comma or tab-separated, and a question mark may be used as a wildcard for unknown values.
-* Auto-run the extraction service on Google spreadsheets by querying spreadsheet ID and (optionally) desired cell range.
-* Robust to spreadsheets with messy scratch work/missing data/empty cells -- will infer the subset of cell ranges that contain relevant information.
+* Auto-run the extraction service on Google spreadsheets by querying the API with spreadsheet ID and (optionally) desired cell range.
+* Robust against spreadsheets with messy scratch work/missing data/empty cells -- will infer the subset of cells that contain relevant information.
+* Google Sheets add-on integration: attach `gsheets-app-scripts/Code.gs` to your team's puzzlehunt spreadsheet template to have the tool available in the Sheets toolbar.
 
 ## Development
 * `npm install -g yarn` if you do not already have it.
@@ -11,20 +12,33 @@
 
 ## API Spec
 
-* `GET /api/extraction?spreadsheetId={spreadsheetId}&range={range}`
+`GET /api/extraction?spreadsheetId={spreadsheetId}&range={range}`
 
 OR
 
-* `POST /api/extraction` -- `req.body -> {"spreadsheetId": ..., "range": ...}`
+`POST /api/extraction` with JSON payload `{"spreadsheetId": ..., "range": ...}`
 
 * `spreadsheetId`: ID of any Google Drive spreadsheet that you have view access to e.g. `spreadsheetId=1lK-4Kbj07QbbGfNAA7sLGIuBc-L0PgMJW_bRde1b1U0`
 * Use `range` parameter to specify where the relevant data is:
   - `range=Sheet1` performs extraction over all data in default **"Sheet1"** tab
   - `range=Main!D5:M13` performs extraction only on contents of the **"Main"** tab: Rows **D-M**, Columns **5-13**.
 
+`GET /api/extraction?contents={contents}`
+* Pass in spreadsheet contents as URI-encoded raw string (CSV or TSV format).
+
+## Google Sheets Add-on
+
+**1.** Highlight range of relevant data, and choose **Puzzlehunt Extraction > Guess extraction from selected range** in the Sheets toolbar.
+![Screenshot 1](/attachments/screenshot_1.png)
+
+**2.** Two additional tabs are auto-generated for you: 
+- a _cleaned_ version of the relevant dataset, with empty columns/rows deleted, non-alphanumeric characters stripped and converted to uppercase. Relevant headers are re-labelled and frozen.
+- a list of guesses with the corresponding extraction mechanism, ordered by confidence.
+![Screenshot 3](/attachments/screenshot_3.png)
+
 ## Examples
 
-### Easy text example
+### [SIMPLE] Raw text example
 
 [Witness 2 META puzzle [Mystery Hunt 2008]](http://www.mit.edu/~puzzle/2008/lbb_metas/witness2.shtml)
 
@@ -42,7 +56,7 @@ LDETRIGPA
 ```
 **Desired extraction**: Read the diagonals to get "GET PETER A LARGER PAD".
 
-**Query**: `GET /api/extraction?contents="GPARTELID%0AIELDGPTAR%0ADRTLIAPGE%0AEGDPLRATI%0AATPIEDRLG%0ARLIGATDEP%0ATIRAPGEDL%0APAGEDLIRT%0ALDETRIGPA"`
+**Query**: `GET /api/extraction?contents=GPARTELID%0AIELDGPTAR%0ADRTLIAPGE%0AEGDPLRATI%0AATPIEDRLG%0ARLIGATDEP%0ATIRAPGEDL%0APAGEDLIRT%0ALDETRIGPA`
 
 **Response**:
 
