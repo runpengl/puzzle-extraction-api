@@ -10,7 +10,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
-    "googleapis": "^36.0.0",
+    "googleapis": "^39.1.0",
     "helmet": "^3.15.0",
     "method-override": "^3.0.0",
     "morgan": "^1.9.1",
