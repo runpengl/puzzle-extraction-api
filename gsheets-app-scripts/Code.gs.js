@@ -1,4 +1,5 @@
 var API_BASE_URL = "https://runpengliu.com:8080/api";
+var MONOSPACE_FONT = "Roboto Mono";
 
 function onOpen() {
     var ui = SpreadsheetApp.getUi();
@@ -38,7 +39,7 @@ function cleanForExtraction() {
 
             var range = sheet.getRange(2, 1, rows.length, rows[0].length);
             range.setValues(rows);
-            range.setFontFamily("Consolas");
+            range.setFontFamily(MONOSPACE_FONT);
             rows[0].forEach(function(v, i) {
                 const col = i + 1;
                 if (v.length <= 25) {
@@ -51,7 +52,7 @@ function cleanForExtraction() {
             var headerRange = sheet.getRange(1, 1, 1, rows[0].length);
             headerRange.setValues([rows[0].map(function(v, i) { return "C" + (i + 1).toString(); })]);
             headerRange.setBackground("#cccccc");
-            headerRange.setFontFamily("Consolas");
+            headerRange.setFontFamily(MONOSPACE_FONT);
             headerRange.setFontWeight("bold");
             headerRange.setHorizontalAlignment("center")
             sheet.setFrozenRows(1);
@@ -102,7 +103,7 @@ function guessExtraction(result) {
             range.setValues(jsonResponse.results.map(function(result) {
                 return [result.guess, result.extraction]
             }));
-            range.setFontFamily("Consolas");
+            range.setFontFamily(MONOSPACE_FONT);
         } else {
             sheet.getRange(2, 1).setValue("No results :(");
         }
